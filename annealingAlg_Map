@@ -29,11 +29,12 @@ def search_map():
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]  # K
 
     row_index = 0   # Keeps track of row number during loop
-    index_in_matrix = 0  # Keeps track of position index in row
+    index_in_matrix = 0  # Keeps track of index in matrix
+    # all_elements = 198
 
     for row_letter in location_map:
         for number_index in row_letter:
-            index_in_row = index_in_matrix - (18*row_index)
+            index_in_row = index_in_matrix - (18*row_index) # # Keeps track of index in row
             if number_index == 1:
 
                 # print("Row number:", row_index+1, "Column number:", index_in_row+1)
@@ -47,6 +48,42 @@ def search_map():
 
             index_in_matrix += 1
         row_index += 1
+
+    print(index_in_matrix)
+
+
+    """item_long_memo = []  # The long term memory to be optimized
+      cycles =  # The number of cycles per iteration
+
+      memo_length = len(item_long_memo)
+      k += 1  # iteration number
+      current_location = cooling_schedule()
+      old_state = []
+      for cycle in cycles:
+         # Back up current state
+         old_state = item_long_memo  # Clone item LIST, so for loop for elements
+         # Randomize method
+         perform_randomize(item_long_memo)  # def perform... method
+         # Did we improve it? Only keep the new method if improved ("greedy")
+        trial_error = calculateScore(item_long_memo)  # If improved, keep it!
+        keep = False
+        if trial_error < current_error:
+            keep = True
+        else:
+            p = calc_probability(current_error, trial_error, current_location)#def calc_probability
+            if p > rand():
+                keep = True
+        # Should we keep this position?
+        if keep: # If yes to keep it
+            current_error = trial_error
+            # Now check global error
+            if trial_error < global_best_error:
+                global_best_error = trial_error
+                global_best = item = item_long_memo
+        else:  # If not keeping
+            item_long_memo = old_state  # Clone item LIST, so for loop for elements
+
+      """
 
 
 def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
