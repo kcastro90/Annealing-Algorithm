@@ -1,9 +1,19 @@
 __author__ = 'karic_000'
-from itertools import product
+
 
 def search_map():
     a, b, c, d, e, f, g, h, i, j, k = 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'
-    letter = a, b, c, d, e, f, g, h, i, j, k
+    letters = (a, b, c, d, e, f, g, h, i, j, k)
+
+    g2, h10, c10, b3, g6, h3, e10, e12, h11, h5, g10 = ('Gates House', 'Grimson Hall',
+                                                        'Hooper St. Lot', 'Spring St. Lot',
+                                                        'Kelly Gymnasium', 'Woodard Hall',
+                                                        'Burnell Hall', 'Tinsley Center',
+                                                        'East Campus Commons',
+                                                        'Davis Alumni Center',
+                                                        'Burril Office Complex')
+
+    places = (g2, h10, c10, b3, g6, h3, e10, e12, h11, h5, g10)
 
     #              [1 , 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18]
     location_map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # A
@@ -25,15 +35,22 @@ def search_map():
         for number_index in row_letter:
             index_in_row = index_in_matrix - (18*row_index)
             if number_index == 1:
-                print("Row number:", row_index+1, "Column number:", index_in_row+1)
+
+                # print("Row number:", row_index+1, "Column number:", index_in_row+1)
                 row_index_to_letter(row_index, a, b, c, d, e, f, g, h, i, j, k)
-                print("Locations:", letter[number_index], row_index)
+                print("Location's coordinates:", letters[row_index], index_in_row+1)
+
+                # Identify coordinates with locate_name
+                locate_name(letters[row_index], row_index)
+                # print("Letter:", letters[row_index], "Numbers:", row_index, "Index:", row_index)
+                print("Place name:", places[row_index],"\n")
+
             index_in_matrix += 1
         row_index += 1
 
 
 def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
-    letter = a, b, c, d, e, f, g, h, i, j, k
+    letter = None
     if index == 0:
         letter = a
     if index == 1:
@@ -56,21 +73,43 @@ def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
         letter = j
     if index == 10:
         letter = k
+    return letter
 
 
-    #  = {}  [(' ', 0), ('A', 1), ('B', 2), ('C',3), ('D', 4), ('D ', 5), ('E',6), ('',), ]
-"""def location_name()
-    gates_house = ('G', 2)
-    grimson_hall = ('H', 10)
-    hooper_st_lot = ('C', 10)
-    spring_st_lot = ("B", 3)
-    kelly_gym = ('G', 6)
-    woodward_hall = ('H', 3)
-    burnell_hall = ('E', 10)
-    tinsley_center = ('E', 12)
-    east_campuscCommons = ('H', 11)
-    davis_alumni_center = ('H', 5)
-    burril_ofice_complex = ('G', 10)"""
+def locate_name(letter, number):
 
+    if letter == 'G' and number == 2:
+        number = 0
+        return number
+    if letter == 'H' and number == 10:
+        number = 1
+        return number
+    if letter == 'C' and number == 10:
+        number = 2
+        return number
+    if letter == 'B' and number == 3:
+        number = 3
+        return number
+    if letter == 'G' and number == 6:
+        number = 4
+        return number
+    if letter == 'H' and number == 3:
+        number = 5
+        return number
+    if letter == 'E' and number == 10:
+        number = 6
+        return number
+    if letter == 'E' and number == 12:
+        number = 7
+        return number
+    if letter == 'H' and number == 11:
+        number = 8
+        return number
+    if letter == 'H' and number == 5:
+        number = 9
+        return number
+    if letter == 'G' and number == 10:
+        number = 10
+        return number
 
 search_map()
