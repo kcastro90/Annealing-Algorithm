@@ -54,10 +54,12 @@ def search_map():
     print("Location options:", location_options)
 
     # Now create a random path to optimize
-    while len(path_order) < len(location_options):  # from 0 - 10
-        i = random.randint(0, len(location_options))
-        path_order.append(location_options[i])
-    print("The chosen path to be optimized is:", path_order)
+    while len(path_order) < len(location_options):  # from 0 - 10 (0<11)
+        i = random.randint(0, 10)  # 11 options
+        if location_options[i] not in path_order:  # Assure no items are being repeated
+            path_order.append(location_options[i])
+
+    print("This will be the randomly chosen path to be optimized:", path_order)
 
 
 def let_d_alg_begin():
