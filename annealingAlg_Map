@@ -31,10 +31,9 @@ def search_map():
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # J
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]  # K
 
-
     index_in_matrix = 0  # Keeps track of index in matrix, and total elements (198 of them)
     row_index = 0   # Keeps track of row number during loop
-    # index_in_row = 0
+
     for row_letter in location_map:
         for number_index in row_letter:
             index_in_row = index_in_matrix - (18*row_index)  # # Keeps track of index in row
@@ -54,6 +53,11 @@ def search_map():
         row_index += 1
     print("Location options:", location_options)
 
+    # Now create a random path to optimize
+    while len(path_order) < len(location_options):  # from 0 - 10
+        i = random.randint(0, len(location_options))
+        path_order.append(location_options[i])
+    print("The chosen path to be optimized is:", path_order)
 
 
 def let_d_alg_begin():
