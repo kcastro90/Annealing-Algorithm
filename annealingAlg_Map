@@ -70,11 +70,11 @@ def let_d_alg_begin(path_order):
     visited_places = 11  # Keeps track of visited locations
     long_term_path = path_order  # path_order is the long term memory to be optimized
     old_path = []  # Saves a previous path in case the old one is better
-    memo_length = len(long_term_path)
     cycles = 0  # The number of cycles per iteration, 1000 is the max
     index = 1  # Starting from the second location
-    euclidean_distance, p1, p2, q1, q2, x1, x2 = 0, 0, 0, 0, 0, 0, 0
-    current_location, next_location, random_location = [], [], []  # Holds the pair of coordinates
+    loop_index = 0
+    # p1, p2, q1, q2 = 0, 0, 0, 0
+    # current_location, next_location, random_location = [], [], []  # Holds the pair of coordinates
     while not done:
         if cycles != 1000:
             for coordinates_pair in long_term_path:
@@ -82,37 +82,61 @@ def let_d_alg_begin(path_order):
                 next_location = long_term_path[index]  # Advance to next index
                 p1, p2 = current_location[0], current_location[1]
                 q1, q2 = next_location[0], next_location[1]
-                euclidean_distance = math.sqrt(((q1-p1)**2) + ((q2-p2)**2))
-                print("euclidean_distance:", euclidean_distance)
-            # current_location = cooling_schedule()
-            # for cycle in cycles:
-            # old_path = long_term_path  # old_path is back up of the current state which might be updated
-             # old_state = item_long_memo  # Clone item LIST, so for loop for elements
-             # Randomize method
-             # perform_randomize(item_long_memo)  # def perform... method
-             # Did we improve it? Only keep the new method if improved ("greedy")
-            # trial_error = calculateScore(item_long_memo)  # If improved, keep it!
-            # keep = False
-            # if trial_error < current_error:
-                # keep = True
-            # else:
-                # p = calc_probability(current_error, trial_error, current_location)#def calc_probability
-                # if p > rand():
-                    # keep = True
-            # Should we keep this position?
-            # if keep: # If yes to keep it
-                # current_error = trial_error
+                old_path = long_term_path  # Back up of the current state which might be updated
+                perform_randomize(loop_index, p1, p2, q1, q2, long_term_path)
+                print("p1, p2, q1, q2, long_term_path:", p1, p2, q1, q2, long_term_path)
+                # if old_path == long_term_path:
+                    # check_global_min_distance()
+
                 # Now check global error
                 # if trial_error < global_best_error:
                     # global_best_error = trial_error
                     # global_best = item = item_long_memo
-            # else:  # If not keeping
-                # item_long_memo = old_state  # Clone item LIST, so for loop for elements
+                loop_index += 1
             if visited_places == 0:  # While under 1000 cycles, once all places are visited, done.
                 done = True
         else:
             done = True
             print()
+
+
+def perform_randomize(index, p1, p2, q1, q2, long_term_path):
+
+    path = long_term_path
+    path2 = long_term_path  # Item will be "swapped"
+    random_int = []  # Index for the random pair of coordinates
+    # random_next, final_x1, final_x2 = [], 0, 0
+    euclidean1, euclidean2 = 0, 0
+    good_random = False
+
+    while not good_random:
+        random_int = random.randint(0, 10)
+        if (path[random_int] != path(index)) and (path[random_int] != path(index+1)):
+            random_next = long_term_path[random_int]
+            x1, x2 = random_next[0], random_next[1]
+            good_random = True
+
+    # Calculate the two different path options
+    if good_random:
+        copy = long_term_path[index]  # Copies element that's being taken out to add somewhere else
+        path2[index] = long_term_path[random_int]
+        path2[random_int] = copy  # Substitute with the deleted element
+        # Begin the euclidean distance comparisons
+        for element in path:
+            x1, x2 = path[element], path[element]
+            y1, y2 = path[element+1], path[element+1]
+            euclidean1 = euclidean1 + (math.sqrt(((x1-x1)**2) + ((y2-y2)**2)))
+        print("euclidean1", euclidean1)
+        for element in path2:
+            x1, x2 = path2[element], path2[element]
+            y1, y2 = path2[element+1], path2[element+1]
+            euclidean2 = euclidean2 + (math.sqrt(((x1-x1)**2) + ((y2-y2)**2)))
+        print("euclidean2", euclidean2)
+
+        # DO A GLOBAL BEST TOO
+        if euclidean2 < euclidean1:
+            long_term_path = path2
+        return long_term_path
 
 
 def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
