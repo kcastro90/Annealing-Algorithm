@@ -67,22 +67,15 @@ def search_map():
 def let_d_alg_begin(path_order):
 
     done = False  # Algorithm can only be done once all places are visited
-    visited_places = 11  # Keeps track of visited locations
-    long_term_path = path_order  # path_order is the long term memory to be optimized
-    #old_path = []  # Saves a previous path in case the old one is better
-    cycles = 0  # The number of cycles per iteration, 1000 is the max
-    index = 1  # Starting from the second location
     loop_index = 0
-    #current_location, next_location, random_location = [], [], []  # Holds the pair of coordinates
+    cycles = 0
+    old_path = path_order #
     while not done:
         if cycles <= 1000:  # Trying to find the best path in 1000 or less steps
-            for coordinates_pair in long_term_path:
+            perform_randomize(path_order)
+
+            """for coordinates_pair in long_term_path:
                 current_location = coordinates_pair
-                # next_location = long_term_path[loop_index+1]  # Advance to next index
-                print("current_location:", current_location)  # "next_location:", next_location)
-                #old_path = long_term_path  # Back up of the current state which might be updated
-                perform_randomize(loop_index, long_term_path)  # index holds current location
-                print("long_term_path:", long_term_path, "current & next", loop_index)
                 # if old_path == long_term_path:
                     # check_global_min_distance()
 
@@ -95,88 +88,85 @@ def let_d_alg_begin(path_order):
                     loop_index = -1  # -1 because -1 is < 10 .: it puts it back at zero
                 if loop_index < 10:
                     loop_index += 1
-                print("loop_index", loop_index)
+                print("loop_index", loop_index)"""
 
-            if visited_places == 0:  # While under 1000 cycles, once all places are visited, done.
-                done = True
-        else:
+            #if visited_places == 0:  # While under 1000 cycles, once all places are visited, done.
+                #done = True
+        if cycles == 1000:
             done = True
             #print()
 
 
-def perform_randomize(index, path):
-
-    i = index  # Make a copy so the loop from the other method isn't thrown off
-    path2 = path  # Second path option
-    euclidean1, euclidean2 = 0, 0
+def perform_randomize(path):
+    #### delete index ^^^ chose 2 different locations and swap them. Only keep the swap if the
+    ### euclidean distance is better than beforevisited_paths = None
+    #  Add bad paths to this list so they
+    long_term_path = None
+    path1 = path
+    path2 = path  # Second path option with swapped elemens
+    already_seen_order = []
+    # euclidean1, euclidean2 = 0, 0
     good_random = False
-    current_pair = path[i]
-    chosen_random_pair = None
-    chosen_random_pair_i = 0  # Saves index of the good chosen pair
-    no_gos = None
+    chosen_random_pair1 = None
+    chosen_random_pair2 = None
+
     while not good_random:
-        print("index", i)
-        random_int = random.randint(0, 10)
-        print("random_int:", random_int)
-        random_pair = path[random_int]
-        if i != 10:  # If next is not null object keep checking
-            # Initiate steps to check the euclidean distance
-            next_index = i+1
-            next_pair = path[next_index]
-            if (random_pair != current_pair) and (random_pair != next_pair):
-                chosen_random_pair = random_pair
-                good_random = True
-        else:  # Last location, all possible paths have been seen
-            chosen_random_pair = random_pair
-            good_random = True
-        chosen_random_pair_i = i
-        print("print current_pair:", current_pair, "next_pair:",chosen_random_pair, "random_pair:",
-              random_pair, "i", i)
+        random_int1 = random.randint(0, 10)
+        print("random_int:", random_int1)
+        chosen_random_pair1 = path[random_int1]
+        random_int2 = random.randint(0, 10)
+        print("random_int:", random_int2)
+        if random_int2 != random_int1:
+            chosen_random_pair2 = path[random_int2]
+            # Swap items for second list
+            # Check if order is in already seen, if not, then done
+            copy1, copy2 = path[random_int1], path[random_int2]
+            path2[random_int1], path2[random_int2] = copy1, copy2
+            while path2 not in already_seen_order:
+                already_seen_order.append(path1)
+                already_seen_order.append(path2)
+                get_euclidean_distance(path, path2)
+                long_term_path = path1  # Saves the best path
+                path = long_term_path   # Assign best path to return to previous method
+                done = True
+    print("chosen_random_pair1:", chosen_random_pair1, "chosen_random_pair2:", chosen_random_pair2,
+          "path:", path)
 
-    print("randomly chosen pair:", chosen_random_pair)
+    return path
+                # DO A GLOBAL BEST TOO
 
-    ### ADD A LIST OF PRIOR PATHS SO NO REPEATED PATHS HAPPEN
-    # #no_gos = no_gos.append(chosen_random_pair)
-    # DO A GLOBAL BEST TOO
 
-    # Calculate the two different path options
-    if good_random:
-        j = 0  # to hold the index of each path
-        while j <= 9:
-            copy = path[i+1]  # Copies element that is going to be replaced
-            path2[i+1] = chosen_random_pair  # Put random location into path2
-            path2[chosen_random_pair_i] = copy  # Replace the index that the random choice tha
-            # was copied from with the element that got replaced
-            # Begin the euclidean distance comparisons
-            for element in path:
-                #while j < 10:  # While a next element in the list; index 10 is the 11th element
-                x1, x2 = element[0], element[1]
-                _next = path[j+1]  # Takes the next element to find their euclidean distance
-                print("Next element:", _next)
-                y1, y2 = _next[0], _next[1]
-                euclidean1 = euclidean1 + (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
-                j += 1
-                print("Current element's Euclidean Distance:", euclidean1)
-            print("Path one's Euclidean Distance:", euclidean1)
-            j = 0  # Reset index j back to 0 for next loop
-            for element in path2:
-                #while j < 10:
-                x1, x2 = element[0], element[1]
-                _next = path[j+1]
-                print("Next element:", _next)
-                y1, y2 = _next[0], _next[1]
-                euclidean2 = euclidean2 + (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
-                j += 1
-                print("Current element's Euclidean Distance:", euclidean2)
-            j = 0
-        print("Random path's Euclidean Distance:", euclidean2)
+def get_euclidean_distance(path, path2):
+    i = 0  # Keeps up with the index so it doesn't exceed the number of elements in list
+    euclidean1 = 0
+    euclidean2 = 0
+    while i <= 9:  # While a next element in the list
+        for element in path:
+            # index 10 is the 11th element
+            x1, x2 = element[0], element[1]
+            _next = path[i+1]  # Takes the next element
+            # their euclidean distance
+            print("Next element:", _next)
+            y1, y2 = _next[0], _next[1]
+            euclidean1 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
+            i += 1
+        print("Path one's Euclidean Distance:", euclidean1)
+        i = 0  # Reset index j back to 0 for next loop
+        for element in path2:
+            x1, x2 = element[0], element[1]
+            _next = path[i+1]
+            print("Next element:", _next)
+            y1, y2 = _next[0], _next[1]
+            euclidean2 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
+            i += 1
+        print("Second path's Euclidean Distance:", euclidean2)
         if euclidean2 < euclidean1:
             path = path2
-            print("Random path was the chosen path:", path)
+            print("Random path 2 was the chosen path:", path)
+            return path, path2
         if euclidean1 < euclidean2:
-            print("The original path was the better option:", path)
-
-        return path
+            print("Random path 1 was the better option:", path)
+            return path, path2
 
 
 def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
