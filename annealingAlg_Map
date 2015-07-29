@@ -21,6 +21,8 @@ def search_map():
 
     location_options = []
     path_order = []
+    #global_best_euclidean = 100  # Pretend worst case scenario of Euclidean Distance of 100
+    #best_euclidean = 0  # The return value will replace this value
 
     #              [1 , 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18]
     location_map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # A
@@ -46,12 +48,12 @@ def search_map():
                 row_index_to_letter(row_index, a, b, c, d, e, f, g, h, i, j, k)
 
                 location_options.append([row_index, index_in_row])
-                print("Location's coordinates:", letters[row_index], index_in_row+1)
+                # print("Location's coordinates:", letters[row_index], index_in_row+1)
 
                 # Identify coordinates with locate_name
                 locate_name(letters[row_index], row_index)
                 # print("Letter:", letters[row_index], "Numbers:", row_index, "Index:", row_index)
-                print("Place name:", places[row_index], "\n")
+                # print("Place name:", places[row_index], "\n")
 
             index_in_matrix += 1
         row_index += 1
@@ -64,17 +66,23 @@ def search_map():
             path_order.append(location_options[i])
 
     print("This will be the randomly chosen path to be optimized:", path_order)
-    for cycles in range(1000):
-        path_order = let_d_alg_begin(path_order)
-    print("Cycles:", cycles)
+    best_euclidean = 100
+    global_best_euclidean = 100
+    for cycles in range(10):
+    ##########################################################
+        #############################CHANGE BACK TO 1000
+        path_order = let_d_alg_begin(path_order, cycles, best_euclidean)
+        if best_euclidean < global_best_euclidean:
+            global_best_euclidean = best_euclidean
+    print("GLOBAL BEST EUCLIDEAN VALUE:", global_best_euclidean)  # Cycles:", cycles
 
 
-def let_d_alg_begin(path):
+def let_d_alg_begin(path, achieved_in_cycle, best_euclidean):
 
     path1 = path
     path2 = path  # Second path option with swapped elements
     already_seen_order = []
-
+    best_path = []
     good_random = True
     while good_random:
         random_int1 = random.randint(0, 10)
@@ -83,28 +91,30 @@ def let_d_alg_begin(path):
             # Swap items for second list
             # Check if order is in already seen, if not, then done
             copy1, copy2 = path[random_int1], path[random_int2]
-            print("The coordinates to be swapped are:", copy1, copy2)
-
+            # print("The coordinates to be swapped are:", copy1, copy2)
             path2[random_int1], path2[random_int2] = copy2, copy1
 
-            if path2 not in already_seen_order:
-                already_seen_order.append(path2)
-                get_euclidean_distance(path, path2)
-                long_term_path = path1  # Saves the best path
-                path = long_term_path   # Assign best path to return to previous method
+            if path1 or path2 not in already_seen_order:
+                # Make sure to add the any path that hasn't been seen before to the list
+                if path2 not in already_seen_order:
+                    already_seen_order.append(path2)
+                if path1 not in already_seen_order:
+                    already_seen_order.append(path1)
+                get_euclidean_distance(path1, path2, best_euclidean)
+
+                #########################################################################
+                # print("best path", best_path, "and cycle", achieved_in_cycle)
                 good_random = False
                 print("New path:", path)
     return path
-                # DO A GLOBAL BEST TOO
-                # And figure ou which step was the best path found
 
 
-def get_euclidean_distance(path, path2):
+def get_euclidean_distance(path, path2, best_local):
     i = 0  # Keeps up with the index so it doesn't exceed the number of elements in list
     j = 1  # Keeps up with the index of the next element
     euclidean1 = 0
     euclidean2 = 0
-    # b = cycle
+    best_euclidean = best_local
 
     for element in path:
         # index 10 is the 11th element
@@ -112,7 +122,7 @@ def get_euclidean_distance(path, path2):
         _next = path[j]  # Takes the next element
         # their euclidean distance
         y1, y2 = _next[0], _next[1]
-        euclidean1 = euclidean1 + (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
+        euclidean1 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
         if i < 9:  # i = 8->9, j = 9->10 and halts
             i += 1
             j += 1
@@ -122,17 +132,23 @@ def get_euclidean_distance(path, path2):
         x1, x2 = element[0], element[1]
         _next = path[j]
         y1, y2 = _next[0], _next[1]
-        euclidean2 = euclidean2 + math.sqrt(((x1-y1)**2) + ((x2-y2)**2))
+        euclidean2 += math.sqrt(((x1-y1)**2) + ((x2-y2)**2))
         if i < 9:
             i += 1
             j += 1
-    if euclidean2 < euclidean1:
-        path = path2
-        print("Best random path chosen was:", path, "\nWith Euclidean Distance of:", euclidean2)
-        #print("Best path found at the", b, "step.")
-    if euclidean1 < euclidean2:
-        print("Best random path chosen was:", path, "\nWith Euclidean Distance of:", euclidean1)
-        #print("Best path found at the", b, "step.")
+
+    print(euclidean1, euclidean2)
+    if (euclidean1 < best_euclidean) and (euclidean1 < euclidean2):
+        best_euclidean = euclidean1
+        # print("Best local random path chosen was:", path)
+        best_local = best_euclidean
+    if (euclidean2 < best_euclidean) and (euclidean2 < euclidean1):
+        path = path2  # Path 1 is always the best path
+        best_euclidean = euclidean2
+        # print("Best local random path chosen was:", path)
+        best_local = best_euclidean
+    print("The best local local Euclidean Distance is:", best_local)
+    return path, path2, best_local
 
 
 def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
