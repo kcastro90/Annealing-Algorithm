@@ -21,6 +21,7 @@ def search_map():
 
     location_options = []
     path_order = []
+    path2 = []
     #global_best_euclidean = 100  # Pretend worst case scenario of Euclidean Distance of 100
     #best_euclidean = 0  # The return value will replace this value
 
@@ -64,23 +65,27 @@ def search_map():
         i = random.randint(0, 10)  # 11 options
         if location_options[i] not in path_order:  # Assure no items are being repeated
             path_order.append(location_options[i])
+            path2.append(location_options[i])
 
     print("This will be the randomly chosen path to be optimized:", path_order)
     best_euclidean = 100
-    global_best_euclidean = 100
-    for cycles in range(10):
+    step = 0
+    for cycles in range(1):
     ##########################################################
         #############################CHANGE BACK TO 1000
-        path_order = let_d_alg_begin(path_order, cycles, best_euclidean)
-        if best_euclidean < global_best_euclidean:
-            global_best_euclidean = best_euclidean
-    print("GLOBAL BEST EUCLIDEAN VALUE:", global_best_euclidean)  # Cycles:", cycles
+        step = cycles
+        path_order = let_d_alg_begin(path_order, path2, best_euclidean)
+        local_euclidean = best_euclidean
+        if local_euclidean < best_euclidean:
+            best_euclidean = local_euclidean
+            step = cycles
+
+    print("GLOBAL BEST EUCLIDEAN VALUE:", best_euclidean, "\ncycle achieved", step)
 
 
-def let_d_alg_begin(path, achieved_in_cycle, best_euclidean):
+def let_d_alg_begin(path, path2, best_euclidean):
 
-    path1 = path
-    path2 = path  # Second path option with swapped elements
+
     already_seen_order = []
     best_path = []
     good_random = True
@@ -90,22 +95,21 @@ def let_d_alg_begin(path, achieved_in_cycle, best_euclidean):
         if random_int2 != random_int1:
             # Swap items for second list
             # Check if order is in already seen, if not, then done
-            copy1, copy2 = path[random_int1], path[random_int2]
-            # print("The coordinates to be swapped are:", copy1, copy2)
-            path2[random_int1], path2[random_int2] = copy2, copy1
 
-            if path1 or path2 not in already_seen_order:
+            if path or path2 not in already_seen_order:
                 # Make sure to add the any path that hasn't been seen before to the list
                 if path2 not in already_seen_order:
                     already_seen_order.append(path2)
-                if path1 not in already_seen_order:
-                    already_seen_order.append(path1)
-                get_euclidean_distance(path1, path2, best_euclidean)
+                if path not in already_seen_order:
+                    already_seen_order.append(path)
 
                 #########################################################################
                 # print("best path", best_path, "and cycle", achieved_in_cycle)
-                good_random = False
-                print("New path:", path)
+            path2[random_int1], path2[random_int2] = path2[random_int1], path2[random_int2]
+            good_random = False
+
+    get_euclidean_distance(path, path2, best_euclidean)
+    print("New path:", path)
     return path
 
 
@@ -116,28 +120,28 @@ def get_euclidean_distance(path, path2, best_local):
     euclidean2 = 0
     best_euclidean = best_local
 
+    print("path1:", path)
     for element in path:
-        # index 10 is the 11th element
-        x1, x2 = element[0], element[1]
-        _next = path[j]  # Takes the next element
-        # their euclidean distance
-        y1, y2 = _next[0], _next[1]
-        euclidean1 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
-        if i < 9:  # i = 8->9, j = 9->10 and halts
-            i += 1
-            j += 1
-    i = 0  # Reset index i & j back to 0 for next loop
-    j = 0
-    for element in path2:
-        x1, x2 = element[0], element[1]
-        _next = path[j]
-        y1, y2 = _next[0], _next[1]
-        euclidean2 += math.sqrt(((x1-y1)**2) + ((x2-y2)**2))
+        if i <= 9:
+            x1, x2 = element[0], element[1]
+            _next = path[j]
+            y1, y2 = _next[0], _next[1]
+            euclidean2 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
         if i < 9:
             i += 1
             j += 1
-
+    print("path2:", path2)
+    for element in path2:
+        if i <= 9:
+            x1, x2 = element[0], element[1]
+            _next = path2[j]
+            y1, y2 = _next[0], _next[1]
+            euclidean2 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
+        if i < 9:
+            i += 1
+            j += 1
     print(euclidean1, euclidean2)
+
     if (euclidean1 < best_euclidean) and (euclidean1 < euclidean2):
         best_euclidean = euclidean1
         # print("Best local random path chosen was:", path)
@@ -214,4 +218,29 @@ def locate_name(letter, number):
         number = 10
         return number
 
+"""def locate_name2(letter, number):
+
+    if letter == 7 and number == 1:
+        print("Gates House")
+    if letter == 8 and number == 10:
+        print("Grimson Hall")
+    if letter == 3 and number == 10:
+        print("Hooper St. Lot")
+    if letter == 2 and number == 3:
+        print("Spring St. Lot")
+    if letter == 7 and number == 6:
+        print("Kelly Gymnasium")
+    if letter == 8 and number == 3:
+        print("Woodard Hall")
+    if letter == 5 and number == 10:
+        print("Tinsley Center")
+    if letter == 5 and number == 12:
+        print("East Campus Commons")
+    if letter == 8 and number == 11:
+        print("Davis Alumni Cente")
+    if letter == 8 and number == 5:
+        print("Davis Alumni Center")
+    if letter == 7 and number == 10:
+        print("Burril Office Complex")
+"""
 search_map()
