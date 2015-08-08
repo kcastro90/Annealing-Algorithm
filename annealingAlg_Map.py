@@ -1,6 +1,7 @@
 __author__ = 'karic_000'
 import random
 import math
+import copy
 
 
 def search_map():
@@ -10,14 +11,14 @@ def search_map():
     a, b, c, d, e, f, g, h, i, j, k = 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'
     letters = (a, b, c, d, e, f, g, h, i, j, k)
 
-    g2, h10, c10, b3, g6, h3, e10, e12, h11, h5, g10 = ('Gates House', 'Grimson Hall',
+    g2, h10, c10, b5, g6, h3, e10, e12, h11, h5, g10 = ('Gates House', 'Grimson Hall',
                                                         'Hooper St. Lot', 'Spring St. Lot',
                                                         'Kelly Gymnasium', 'Woodard Hall',
                                                         'Burnell Hall', 'Tinsley Center',
                                                         'East Campus Commons',
                                                         'Davis Alumni Center',
                                                         'Burril Office Complex')
-    places = (g2, h10, c10, b3, g6, h3, e10, e12, h11, h5, g10)
+    places = (g2, h10, c10, b5, g6, h3, e10, e12, h11, h5, g10)
 
     location_options = []
     path_order = []
@@ -70,28 +71,29 @@ def search_map():
             path_order.append(location_options[i])
 
     print("This will be the randomly chosen path to be optimized:", path_order)
-    best_euclidean = 100
-
-    for cycles in range(2):
+    # best_euclidean = copy.local_euclidean
+    global_best_euclidean = 100.00
+    for cycles in range(5):
         ##############################################
         #############################CHANGE BACK TO 1000
         #step = cycles
-        let_d_alg_begin(path_order, path2, best_euclidean, already_seen_order)
-        local_euclidean = best_euclidean
-        if local_euclidean < best_euclidean:
-            best_euclidean = local_euclidean
+        let_d_alg_begin(path_order, path2, global_best_euclidean, already_seen_order)
+        local_euclidean = global_best_euclidean
+        if local_euclidean < global_best_euclidean:
+            global_best_euclidean = copy(local_euclidean)
+            # best_euclidean = local_euclidean
             print("Potential global best value found at step", cycles)
+    print("local_euclidean", local_euclidean)
+    print("GLOBAL BEST EUCLIDEAN VALUE:", global_best_euclidean)
 
-    print("GLOBAL BEST EUCLIDEAN VALUE:", best_euclidean)
-
-    print("The best chosen path was found to be in the following order:")
+    print("\nThe best chosen path was found to be in the following order:")
     for element in path_order:
         letter = element[0]
         number = element[1]
         index_to_name(letter, number,)
 
 
-def let_d_alg_begin(path, path2, best_euclidean, already_seen_order):
+def let_d_alg_begin(path, path2, best_local, already_seen_order):
 
     good_random = True
     while good_random:
@@ -112,8 +114,9 @@ def let_d_alg_begin(path, path2, best_euclidean, already_seen_order):
                     already_seen_order.append(path)
             good_random = False
 
-    get_euclidean_distance(path, path2, best_euclidean)
-    return path, path2
+    get_euclidean_distance(path, path2, best_local)
+    print("best_euclidean in let d alg..", best_local)
+    return path, path2, best_local
 
 
 def get_euclidean_distance(best_path, path2, best_local):
@@ -147,15 +150,16 @@ def get_euclidean_distance(best_path, path2, best_local):
     print(euclidean1, euclidean2)
 
     if (euclidean1 < best_euclidean) and (euclidean1 < euclidean2):
-        best_local = euclidean1
+        best_euclidean = euclidean1
     if (euclidean2 < best_euclidean) and (euclidean2 < euclidean1):
         best_path = list(path2)  # "best_path or path1 will always be the returned "best path"
-        best_local = euclidean2
+        best_euclidean = euclidean2
+    best_local = best_euclidean
     print("The best local Euclidean Distance is:", best_local, "\nBest path:", best_path)
     return best_path, best_local
 
 
-"""
+
 def row_index_to_letter(index, a, b, c, d, e, f, g, h, i, j, k):
     letter = None
     if index == 0:
@@ -194,8 +198,8 @@ def locate_name(letter, number):
     if letter == 'C' and number == 10:
         number = 2
         return number
-    if letter == 'B' and number == 3:
-        number = 3
+    if letter == 'B' and number == 5:
+        number = 4
         return number
     if letter == 'G' and number == 6:
         number = 4
@@ -217,31 +221,38 @@ def locate_name(letter, number):
         return number
     if letter == 'G' and number == 10:
         number = 10
-        return number"""
+        return number
 
+    g2, h10, c10, b3, g6, h3, e10, e12, h11, h5, g10 = ('Gates House', 'Grimson Hall',
+                                                        'Hooper St. Lot', 'Spring St. Lot',
+                                                        'Kelly Gymnasium', 'Woodard Hall',
+                                                        'Burnell Hall', 'Tinsley Center',
+                                                        'East Campus Commons',
+                                                        'Davis Alumni Center',
+                                                        'Burril Office Complex')
 def index_to_name(letter, number):
 
-    if letter == 7 and number == 1:
+    if letter == 6 and number == 1:
         print("Gates House")
-    if letter == 8 and number == 10:
+    if letter == 7 and number == 9:
         print("Grimson Hall")
-    if letter == 3 and number == 10:
+    if letter == 2 and number == 9:
         print("Hooper St. Lot")
-    if letter == 2 and number == 3:
+    if letter == 1 and number == 4:
         print("Spring St. Lot")
-    if letter == 7 and number == 6:
+    if letter == 6 and number == 5:
         print("Kelly Gymnasium")
-    if letter == 8 and number == 3:
+    if letter == 7 and number == 2:
         print("Woodard Hall")
-    if letter == 5 and number == 10:
+    if letter == 4 and number == 9:
+        print("Burnell Hall")
+    if letter == 4 and number == 11:
         print("Tinsley Center")
-    if letter == 5 and number == 12:
-        print("East Campus Commons")
-    if letter == 8 and number == 11:
-        print("Davis Alumni Center")
-    if letter == 8 and number == 5:
-        print("Davis Alumni Center")
     if letter == 7 and number == 10:
+        print("East Campus Commons")
+    if letter == 7 and number == 4:
+        print("Davis Alumni Center")
+    if letter == 6 and number == 9:
         print("Burril Office Complex")
 
 
