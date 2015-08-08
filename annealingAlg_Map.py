@@ -68,7 +68,6 @@ def search_map():
         i = random.randint(0, 10)  # 11 options
         if location_options[i] not in path_order:  # Assure no items are being repeated
             path_order.append(location_options[i])
-            #path2.append(location_options[i])
 
     print("This will be the randomly chosen path to be optimized:", path_order)
     best_euclidean = 100
@@ -85,79 +84,56 @@ def search_map():
 
     print("GLOBAL BEST EUCLIDEAN VALUE:", best_euclidean)
 
-    """for element in path_order:
+    print("The best chosen path was found to be in the following order:")
+    for element in path_order:
         letter = element[0]
         number = element[1]
-        print("The best chosen path was found to be in the following order:")
-        index_to_name(letter, number)"""
+        index_to_name(letter, number,)
 
 
 def let_d_alg_begin(path, path2, best_euclidean, already_seen_order):
 
-
-    already_seen_order = []
-    best_path = []
     good_random = True
     while good_random:
         random_int1 = random.randint(0, 10)
         random_int2 = random.randint(0, 10)
-        # array = []
+
         if random_int2 != random_int1:
-            print("random_int1, random_int2", random_int1, random_int2)
-            # Swap items for second list
-            # Check if order is in already seen, if not, then done
-            i = 0
-            array = path
-            print("array", array)
-            array[random_int1], array[random_int2] = path[random_int2], path[random_int1]
-            """for element in path:  # Only way I could "swap" the elements permanently
-                while i <= 9:
-                    if path[i] == path[random_int1]:
-                        array.append(path[random_int2])
-                    if path[i] == path[random_int2]:
-                        array.append(path[random_int1])
-                    if path[i] != element:
-                        array.append(element)
-                    i += 1"""
-            path2 = array
-            array = []
-            print("path2", path2)
-            # array = []  # Reset to not create an infinite array.
-            # print("path2", path2)
+            swap = list(path)
+            swap[random_int1], swap[random_int2] = path[random_int2], path[random_int1]
+            # Swap items and have path2 be that new list
+            path2 = swap
 
             if path2 not in already_seen_order:
                 # Make sure to add the any path that hasn't been seen before to the list
                 if path2 not in already_seen_order:
                     already_seen_order.append(path2)
-                #if path not in already_seen_order:
-                    #already_seen_order.append(path)
-
-                #########################################################################
-                # print("best path", best_path, "and cycle", achieved_in_cycle)
-
+                if path not in already_seen_order:
+                    already_seen_order.append(path)
             good_random = False
-    best_euclidean = 100
+
     get_euclidean_distance(path, path2, best_euclidean)
     return path, path2
 
 
-def get_euclidean_distance(path, path2, best_local):
+def get_euclidean_distance(best_path, path2, best_local):
     i = 0  # Keeps up with the index so it doesn't exceed the number of elements in list
     j = 1  # Keeps up with the index of the next element
     euclidean1 = 0
     euclidean2 = 0
     best_euclidean = best_local
+    path = list(best_path)  # Clones list
 
-    print("path1:", path)
     for element in path:
         if i <= 9:
             x1, x2 = element[0], element[1]
             _next = path[j]
             y1, y2 = _next[0], _next[1]
-            euclidean2 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
+            euclidean1 += (math.sqrt(((x1-y1)**2) + ((x2-y2)**2)))
         if i < 9:
             i += 1
             j += 1
+    # print("path1:", path)
     for element in path2:
         if i <= 9:
             x1, x2 = element[0], element[1]
@@ -167,20 +143,16 @@ def get_euclidean_distance(path, path2, best_local):
         if i < 9:
             i += 1
             j += 1
-    print("path2:", path2)
+    # print("path2:", path2)
     print(euclidean1, euclidean2)
 
     if (euclidean1 < best_euclidean) and (euclidean1 < euclidean2):
-        best_euclidean = euclidean1
-        # print("Best local random path chosen was:", path)
-        best_local = best_euclidean
+        best_local = euclidean1
     if (euclidean2 < best_euclidean) and (euclidean2 < euclidean1):
-        path = path2  # Path 1 is always the best path
-        best_euclidean = euclidean2
-        # print("Best local random path chosen was:", path)
-        best_local = best_euclidean
-    print("The best local local Euclidean Distance is:", best_local)
-    return path, path2, best_local
+        best_path = list(path2)  # "best_path or path1 will always be the returned "best path"
+        best_local = euclidean2
+    print("The best local Euclidean Distance is:", best_local, "\nBest path:", best_path)
+    return best_path, best_local
 
 
 """
