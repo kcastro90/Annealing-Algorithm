@@ -73,18 +73,21 @@ def search_map():
     print("This will be the randomly chosen path to be optimized:", path_order)
     # best_euclidean = copy.local_euclidean
     global_best_euclidean = 100.00
+    local_euclidean = 0
+    global_best = 0
     for cycles in range(5):
         ##############################################
         #############################CHANGE BACK TO 1000
         #step = cycles
-        let_d_alg_begin(path_order, path2, global_best_euclidean, already_seen_order)
-        local_euclidean = global_best_euclidean
+        path_order, path2, global_best = let_d_alg_begin(path_order, path2, global_best_euclidean,
+                                                         already_seen_order)
+        local_euclidean = global_best
         if local_euclidean < global_best_euclidean:
-            global_best_euclidean = copy(local_euclidean)
+            global_best = local_euclidean
             # best_euclidean = local_euclidean
             print("Potential global best value found at step", cycles)
     print("local_euclidean", local_euclidean)
-    print("GLOBAL BEST EUCLIDEAN VALUE:", global_best_euclidean)
+    print("GLOBAL BEST EUCLIDEAN VALUE:", global_best)
 
     print("\nThe best chosen path was found to be in the following order:")
     for element in path_order:
